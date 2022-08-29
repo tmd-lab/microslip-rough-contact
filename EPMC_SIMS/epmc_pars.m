@@ -50,8 +50,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u_v2', pars_num);
         inputpars.load_initial = true;
-        inputpars.prevInd = 15;
-        inputpars.loadName = 'Results/epmc_paper_run10_v2_iter';
+        %inputpars.prevInd = 15;
+        %inputpars.loadName = 'Results/epmc_paper_run10_v2_iter';
 
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.1;
@@ -96,8 +96,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u_v2', pars_num);
         inputpars.load_initial = true;
-        inputpars.prevInd = 10;
-        inputpars.loadName = 'Results/epmc_paper_run12_v2_iter.mat';
+        %inputpars.prevInd = 10;
+        %inputpars.loadName = 'Results/epmc_paper_run12_v2_iter.mat';
 
         inputpars.arcSettings.da = 0.1; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.2;
@@ -120,8 +120,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u_v2', pars_num);
         inputpars.load_initial = true;
-        inputpars.prevInd = 13;
-        inputpars.loadName = 'Results/epmc_paper_run13_v2_iter.mat';
+        %inputpars.prevInd = 13;
+        %inputpars.loadName = 'Results/epmc_paper_run13_v2_iter.mat';
         
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.1;
@@ -144,8 +144,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u_v2', pars_num);
         inputpars.load_initial = true;
-        inputpars.prevInd = 14;
-        inputpars.loadName = 'Results/epmc_paper_run14_v2_iter.mat';
+        %inputpars.prevInd = 14;
+        %inputpars.loadName = 'Results/epmc_paper_run14_v2_iter.mat';
 
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.2;
@@ -244,8 +244,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u', pars_num);
         inputpars.load_initial = false;
-        inputpars.prevInd = 9;
-        inputpars.loadName = 'Results/epmc_paper_run19_iter';
+        %inputpars.prevInd = 9;
+        %inputpars.loadName = 'Results/epmc_paper_run19_iter';
 
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.12;
@@ -272,8 +272,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u', pars_num);
         inputpars.load_initial = true;
-        inputpars.prevInd = 26;
-        inputpars.loadName = 'Results/epmc_paper_run20_iter';
+        %inputpars.prevInd = 26;
+        %inputpars.loadName = 'Results/epmc_paper_run20_iter';
 
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.12;
@@ -300,8 +300,8 @@ switch pars_num
         
         inputpars.output_name = sprintf('epmc_paper_run%u', pars_num);
         inputpars.load_initial = false;
-        inputpars.prevInd = 9;
-        inputpars.loadName = 'Results/epmc_paper_run21_iter';
+        %inputpars.prevInd = 9;
+        %inputpars.loadName = 'Results/epmc_paper_run21_iter';
 
         inputpars.arcSettings.da = 0.04; % If displacements are near constant, then steps are 0.02 to start (since dA is scaled by b=0.5).
         inputpars.arcSettings.dsmax = 0.12;
