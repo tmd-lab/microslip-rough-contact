@@ -456,10 +456,10 @@ if(onnots)
 end
 
 
-if(~onnots)
-    % If on local do not exit in case you want to look at something
-    keyboard %use "dbcont" to continue
-end
+% if(~onnots)
+%     % If on local do not exit in case you want to look at something
+%     keyboard %use "dbcont" to continue
+% end
 
 
 
