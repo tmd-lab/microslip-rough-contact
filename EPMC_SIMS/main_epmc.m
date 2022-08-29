@@ -205,83 +205,9 @@ Nqp_radius = 100; %overridden to 1 if using a tangent or secant asperity model b
 Nqp_heights = 100;
 
 
-%% Intialize Functions
-% 
-% %tangential force function. for a direction and an asperity.
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%
-% % Sphere models
-% % ASP_FUN = @SPHERE_IWAN_DECOUPLE; modeloutname = 'sphere_iwan_de'; 
-% % ASP_FUN = @SPHERE_TAN_DECOUPLE; modeloutname = 'sphere_tan_de'; Nqp_radius = 1;
-% % ASP_FUN = @SPHERE_SEC_DECOUPLE; modeloutname = 'sphere_sec_de'; Nqp_radius = 1;
-% 
-% % ASP_FUN_PRE = @SPHERE_PRE;
-% % ELEM_TRAC = @RC_TRACTION;
-% % pars.mu     = 0.075;
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%
-% %Ellipsoid Models
-% 
-% % ASP_FUN = @ELLIPSOID_TAN_DECOUPLE; modeloutname = 'ellip_tan_de'; Nqp_radius = 1;
-% % ASP_FUN = @ELLIPSOID_SEC_DECOUPLE; modeloutname = 'ellip_sec_de'; Nqp_radius = 1;
-% % ASP_FUN = @ELLIPSOID_IWAN_DECOUPLE; modeloutname = 'ellip_iwan_de'; 
-% % ASP_FUN = @ELLIPSOID_IWAN_FIT_DECOUPLE; modeloutname = 'ellip_iwan_fit_de'; 
-% % ASP_FUN = @ELLIPSOID_IWAN_FIT_COUPLE; modeloutname = 'ellip_iwan_fit_co'; 
-% 
-% % ASP_FUN_PRE = @ELLIPSOID_PRE;
-% % ELEM_TRAC = @RC_TRACTION;
-% % pars.mu     = 0.075;
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % % Plastic Models - Etsion's unloading
-% % ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM2; modeloutname = 'sphere_pltan_de_plnorm'; Nqp_radius = 1;
-% % ASP_FUN_PRE = @SPHERE_PLASTIC_PRE2;
-% % 
-% % ELEM_TRAC = @RC_TRACTION_PLASTIC;
-% % 
-% % % pars.mu     = Inf; %Pure plasticity
-% % % pars.mu     = 0.9; %Mixture
-% % pars.mu     = 100; %Mixture - for CEB mostly purely
-% % % pars.mu     = 0.05; % For pure Coulomb (or mostly Coulomb with plasticity). 
-% % 
-% % pars.sliptype = 3; % Setting divisible by 2 will consider plasticity and Coulomb., Divisible by 3 will do min(others, CEB)
-% % 
-% 
-% 
-% % %%%%%%%%%%%%%%%%%%%%%%%%%%
-% % Plastic Models - Brake unloading
-% ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM; modeloutname = 'sphere_pltan_de_plnorm'; Nqp_radius = 1;
-% ASP_FUN_PRE = @SPHERE_PLASTIC_PRE;
-% 
-% ELEM_TRAC = @RC_TRACTION_PLASTIC;
-% 
-% % pars.mu     = Inf; %Pure plasticity
-% % pars.mu     = 0.9; %Mixture
-% 
-% % pars.mu     = 1e10; %Mixture - for CEB mostly purely - verify for Journal paper
-% % pars.sliptype = 3; % Must be 3 otherwise discontinuities exist. 2 isn't implemented correctly. 1 is okay for EPMC, but discontinuous in some cases 
-% 
-% pars.sliptype = 1; % Must be 3 otherwise discontinuities exist. 2 isn't implemented correctly. 1 is okay for EPMC, but discontinuous in some cases 
-% pars.mu     = 0.01; % For pure Coulomb (or mostly Coulomb with plasticity). 
-% 
-% 
-% 
-% % CFUN = @(uxyn,pn0,pars,prev) RC_FULL_TR(uxyn,pn0,pars, ASP_FUN, PZFUN, ELEM_TRAC, Nqp_heights, Nqp_radius, zmin, zmax, area_density, prev, zte_gaps);
-% % CFUN_PRE = @(uxyn,pn0,pars,prev) RC_FULL_TR(uxyn,pn0,pars, ASP_FUN_PRE, PZFUN, ELEM_TRAC, Nqp_heights, Nqp_radius, zmin, zmax, area_density, prev, zte_gaps);
-
 %% Input deck style:
 
-if(isequal('ETSION', upper(inputpars.unloadModel)))
-
-    % Plastic Models - Etsion's unloading
-    ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM2; modeloutname = 'sphere_pltan_de_plnorm'; Nqp_radius = 1;
-    ASP_FUN_PRE = @SPHERE_PLASTIC_PRE2;
-    
-    ELEM_TRAC = @RC_TRACTION_PLASTIC;
-
-elseif(isequal('BRAKE', upper(inputpars.unloadModel)))
+if(isequal('BRAKE', upper(inputpars.unloadModel)))
     
     % Plastic Models - Brake unloading
     ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM; modeloutname = 'sphere_pltan_de_plnorm'; Nqp_radius = 1;
@@ -467,88 +393,9 @@ HARM_FUN = @(uxyn, h, t, cst, prev, quadz) RC_TRACTION_PL_HARMONIC(uxyn, h, t, A
 
                 
 
-%% Setup model
+%% Setup model / Cleanup
 
 clear C; % Previous C was for plasticity not the damping matrix that this wants.
-
-% 
-% GM = MDOFGEN(M, K, C, L);
-% 
-% % prev = []; %CORRECTLY INITIALIZE THIS
-% clear prev0;
-% 
-% prev0.tx0 = zeros(Nqp_heights, Nqp_radius); %traction for each slider of each asperity height - X
-% prev0.ty0 = zeros(Nqp_heights, Nqp_radius); %traction for each slider of each asperity height - X
-% prev0.rq0 = ones(Nqp_heights, 1)*linspace(0, 1, Nqp_radius); %radii for each slip radius used
-% prev0.uxyw0 = ones(Nqp_heights, 1)*[0, 0, 0]; %displacement at previous step. 
-% prev0.deltam = zeros(Nqp_heights, 1); %Max previous normal displacement
-% prev0.Fm = zeros(Nqp_heights, 1);%Max previous normal force
-% prev0.am = zeros(Nqp_heights, 1);%reversal contact radius
-% 
-% 
-% 
-% % GM = GM.SETNLFUN(2+5, QuadMats.Q, CFUN, QuadMats.T, prev, HARM_INIT);
-% 
-% % Say we have,
-% % Cell (Npoints,1) Ls where, Ls{i} is (3 x GM.Ndofs) : Go from global DoFs to local Dofs of nonlinearity "i"
-% % Cell (Npoints,1) Lf where, Lf{i} is (GM.Ndofs x 3) : Go from nonlinear forces from nonlinearity "i" to global DoFs
-% 
-% Npoints = MESH.Ne*No;
-% 
-% Ls = cell(Npoints, 1);
-% Lf = cell(Npoints, 1);
-% 
-% % QL = [kron(QuadMats.Q, eye(3)), zeros(size(QuadMats.Q,1)*3, size(L,1)-size(QuadMats.Q,2)*3)]*L;
-% QL = kron(QuadMats.Q, eye(3))*L(1:3*MESH.Nn, :);
-% LTT = L(1:3*MESH.Nn, :)'*kron(QuadMats.T, eye(3));
-% 
-% for i=1:Npoints % MESH.Ne*No - > "No" points per element
-% %     GM = GM.SETNLFUN(2+5, Ls{i}, @(blah) HARMFUN(blah, pars{i}), Lf{i},
-% %     prev);)
-% 
-%     Ls{i} = QL(((i-1)*3+1):((i-1)*3+3), :);
-%     Lf{i} = LTT(:, ((i-1)*3+1):((i-1)*3+3));
-%     GM = GM.SETNLFUN(2+5, Ls{i}, ...
-%         @(uxyn, h, t, cst, prev)HARM_FUN(uxyn, h, t, cst, prev, zte_gaps(i)), ...
-%         Lf{i}, prev0, ...
-%         @(uxyn_init, uxyn0, h, t, prev)HARM_INIT(uxyn_init, uxyn0, h, t, prev, zte_gaps(i)));
-% end
-% 
-
-
-%% Load a previous high amplitude run for use in shakedown prestress
-
-% WARNING: THIS DOES NOT CURRENTLY WORK SINCE THE DAMPING IN THE PREVIOUS
-% BLOCK WAS WRONG SO IT IS COMMENTED OUT.
-
-useHighPrev = false;
-
-if(useHighPrev)
-    
-    warning('Using a history run for linear analysis, not completely verified');
-
-    %%%%%%%%%% Load and copy history from a past instance
-    tmp = load('Results/epmc_ceb67_meso3_poly31.mat');
-    maxind = 34;
-
-    h = 0:3;
-    Nhc = sum((h==0)+2*(h~=0)); %Number of Harmonic Coordinates
-    Nt = 2^7; %Number of time points per AFT, Linear Systems -> Least Common Multiple?, Nidish recommends 2^7
-
-    mask = ones(size(tmp.Ulc( :, maxind)));
-    mask( ((length(mask)-3)/Nhc+1):end-3) = 0;
-%     mask( 1:((length(mask)-3)/Nhc) ) = 0;
-    
-    prevHigh = GM.COPY_HISTORY(mask.*tmp.Ulc( :, maxind), h, Nt);
-    
-    
-    figure; 
-    un_high = cellfun(@(c) c.uxyw0(1, 3), prevHigh);
-    semilogy(un_high);
-%     semilogy(un_high, '--');
-    hold on;
-
-end
 
 %% Stuck interface initial guess
 
@@ -701,15 +548,6 @@ if(mode_ind == 2)
     assert(mi == 3, '2nd bending mode not using third system mode as expected');
 end
 
-%% Save Prestressed Information
-
-% save('./DATA/prestress_info_2_25.mat');
-% load('./DATA/prestress_info_2_25.mat');
-
-
-
-% save('./DATA/prestress_info_3_23.mat');
-% load('./DATA/prestress_info_3_23.mat');
 
 %% Damping Factors / Matrix
 Zetas = [0.087e-2; 0.034e-2]; 
@@ -720,11 +558,10 @@ C = ab(1)*M + ab(2)*dR0;
 Zetas_wst = 1./(2*Wst)*ab(1) + Wst/2*ab(2);
 
 
-%% Setup model - this needs to happen earlier if copying history. 
+%% Setup model 
 
 GM = MDOFGEN(M, K, C, L);
 
-% prev = []; %CORRECTLY INITIALIZE THIS
 clear prev0;
 
 prev0.tx0 = zeros(Nqp_heights, Nqp_radius); %traction for each slider of each asperity height - X
@@ -734,7 +571,6 @@ prev0.uxyw0 = ones(Nqp_heights, 1)*[0, 0, 0]; %displacement at previous step.
 prev0.deltam = zeros(Nqp_heights, 1); %Max previous normal displacement
 prev0.Fm = zeros(Nqp_heights, 1);%Max previous normal force
 prev0.am = zeros(Nqp_heights, 1);%reversal contact radius
-
 
 
 % GM = GM.SETNLFUN(2+5, QuadMats.Q, CFUN, QuadMats.T, prev, HARM_INIT);
@@ -753,8 +589,6 @@ QL = kron(QuadMats.Q, eye(3))*L(1:3*MESH.Nn, :);
 LTT = L(1:3*MESH.Nn, :)'*kron(QuadMats.T, eye(3));
 
 for i=1:Npoints % MESH.Ne*No - > "No" points per element
-%     GM = GM.SETNLFUN(2+5, Ls{i}, @(blah) HARMFUN(blah, pars{i}), Lf{i},
-%     prev);)
 
     Ls{i} = QL(((i-1)*3+1):((i-1)*3+3), :);
     Lf{i} = LTT(:, ((i-1)*3+1):((i-1)*3+3));
@@ -772,7 +606,7 @@ end
 h = 0:3; %Harmonics - converges
 Nhc = sum((h==0)+2*(h~=0)); %Number of Harmonic Coordinates
 
-Nt = 2^7; %Number of time points per AFT, Nidish recommends 2^7
+Nt = 2^7; %Number of time points per AFT, recommended 2^7
 
 Fl = kron([0; 1; 0; zeros(Nhc-3,1)], L(end,:)'); %Pull out the point where the 90deg phase constraint
 
@@ -780,22 +614,16 @@ if(mode_ind == 1)
     As = -7; %log10(startAmp) Use -7 for plotting?
     Ae = -4.2; % log10(endAmp)
 elseif(mode_ind == 2)
-    
-    
     As = -7.7; %log10(startAmp) Use -7 for plotting?
     Ae = -4.2; % log10(endAmp)
 end
-da = inputpars.arcSettings.da; %arc length size - maybe O(NDOFS)
-% da = 2e4 - failed on 152ZTE on July 8
-%5e3 generally works for starting, but huge steps for plastic models
 
-
-
+da = inputpars.arcSettings.da; 
 
 
 % Simulation for mode mi
 Uwx0 = [kron([0; 0; 1; zeros(Nhc-3,1)], Vst(:,mi)) + kron([1; zeros(Nhc-1,1)], Xstat); ...
-        Wst(mi); 2*Zetas_wst(mi)*Wst(mi)]; %what is this doing? [U0; U1cos; U1sin; . . . ; W; Xi] with each U being the full DOF vector?
+        Wst(mi); 2*Zetas_wst(mi)*Wst(mi)]; %This is: [U0; U1cos; U1sin; . . . ; W; Xi] with each U being the full DOF vector
 
 Dscale = [mean(abs(Xstat))*ones(size(Xstat));
             mean(abs(Vst(:, mi)))*ones(length(Vst(:,mi))*(Nhc-1),1); 
@@ -807,10 +635,6 @@ Dscale = [mean(abs(Xstat))*ones(size(Xstat));
 K0norm = sparse(diag(1./Dscale(1:end-1).^2));
 normc = (Uwx0)'*K0norm*(Uwx0);
 
-
-% Copt = struct('Nmax', 1000, 'dsmax', 0.05, 'dsmin', 0.001, 'DynDscale', 1);
-% Copt = struct('Nmax', 10, 'dsmax', 0.05, 'dsmin', 0.001, 'DynDscale', 1); %works, just doesn't go anywhere.
-% max of 80e5 works for 3 harmonics and 152 ZTE
 Copt = struct('Nmax', 1000, 'dsmax', inputpars.arcSettings.dsmax, ...
                 'dsmin', inputpars.arcSettings.dsmin, 'DynDscale', 0, 'Dscale', Dscale, ...
                 'Display', true, ...
@@ -834,17 +658,6 @@ end
             
 optEPMC = struct('tol', 1e-6, 'maxAFT', 3);
 
-%DynDscale - dynamic d scaling. - diagonal conditioning on the unknowns
-%(right), also improves the continuation to be more evenly spaced set of
-%points with arc length. 
-%
-% D = {[|U0|; |W|], D}
-
-%What is Dscale?
-% Copt.Dscale = [max(abs(Uwx0), min(abs(Uwx0(Uwx0~=0)))); 1];
-
-
-
 
 Fl = Fl + kron([1; zeros(Nhc-1,1)], Prestress*Fv); % Add static forces
 
@@ -862,7 +675,6 @@ if(inputpars.load_initial)
 end
 
 
-
 % Save the git hash with the data. 
 [~,git_hash_string] = system('git rev-parse HEAD');
 
@@ -870,14 +682,7 @@ if(onnots)
     save(['Results/' output_name '_pre']);
 end
 
-% save(sprintf('Results/TMD2021/ElasticFlat/epmc_tmd_absV2_run%u_GM.mat', runnum), 'GM');
 
-
-% Use this callback to view plot as it evolves
-% figure(5)
-% Copt.CallbackFun = @(Uwxa, dUwxas, Uwxapred, Copt) plot(Uwxa(end,:), Uwxa(end-2,:), '.-', Uwxa(end, end-1), Uwxa(end-2, end-1), 'o', Uwxapred(end), Uwxapred(end-2), '*');  % Live Plot Frequency
-% Copt.CallbackFun = @(Uwxa, dUwxas, Uwxapred, Copt) plot(Uwxa(end,:), Uwxa(end-1,:)./(2*Uwxa(end-2,:)), '.-', Uwxa(end, end-1), Uwxa(end-1, end-1)./(2*Uwxa(end-2, end-1)), 'o', Uwxapred(end), Uwxapred(end-1)/(2*Uwxapred(end-2)), '*');  % Live Plot Damping
-% clf();
 [UwxC, dUwxC] = CONTINUE(@(uwxa) GM.EPMCRESFUN(uwxa, Fl, h, Nt, optEPMC), Uwx0, As, Ae, da, Copt);
 
 % Nlvib Continuation (try if PRECOCONT fails) (from Malte Krack & Johann Gross)
@@ -885,57 +690,12 @@ end
 % UwxCs = solve_and_continue(Uwx0, @(Uwxa) GM.EPMCRESFUN(Uwxa, Fl, h, Nt, 1e-6, 1), As, Ae, da, Sopt);
 
 
-% Save the git hash with the data. 
-[~,git_hash_string] = system('git rev-parse HEAD');
-
 if(onnots)
     save(['Results/' output_name]);
 end
 
 
 assert(~onnots, 'Stopping here since this is on NOTS\n');
-
-
-%% Test Just EMPCRESFUN
-% 
-% % [R, dRdUwx, dRda] = GM.EPMCRESFUN([Uwx0; As], Fl, h, Nt, 1e-6, Fs);
-% [R, dRdUwx, dRda] = GM.EPMCRESFUN([Uwx0; As], Fl, h, Nt, 1e-6);
-% 
-% update = dRdUwx\R;
-% 
-% 
-% %% Test Just what gave NaN
-% 
-% tmp = load('DATA/failedEMPCRES_inputs_Mar24_21.mat'); %returns NaN Jacobian?
-% 
-% GM.EPMCRESFUN(tmp.Uwxa, tmp.Fl, tmp.h, tmp.Nt, tmp.tol, tmp.Fs);
-% 
-%% Save Continuation Data 
-
-% save('./DATA/continuation_info_2_25.mat');
-
-%% Plots
-
-
-
-
-%% Random Mesh Stuff
-
-% SHOW2DMESH(MESH.Nds,MESH.Tri,MESH.Quad,'w',-1,-100)  % plot mesh without node numbers
-% hold on; plot(Qm(1,:)*MESH.Nds(:,1), Qm(1,:)*MESH.Nds(:,2), 'r*')
-% Qm(1,:)
-% 
-% 
-% spy(Qm)
-% spy(Tm)
-% clf()
-% SHOW2DMESH(MESH.Nds,MESH.Tri,MESH.Quad,'w',-1,-100)  % plot mesh without node numbers
-% SHOW2DMESH(MESH.Nds,[],MESH.Quad,'b',-1,-100)  % plot mesh without node numbers
-
-
-
-
-
 
 
 end

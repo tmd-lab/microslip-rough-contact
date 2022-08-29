@@ -13,7 +13,7 @@ switch pars_num
         inputpars.nu = 0.3;
         inputpars.sliptype = 3; %mu + CEB
         inputpars.mesoscale = true; % Multiplies ZTE heights;
-        inputpars.unloadModel = 'brake'; %'brake', 'etsion', 'elastic_ellip_tan';
+        inputpars.unloadModel = 'brake'; %'brake', 'elastic_ellip_tan';
         inputpars.Et = 620e6;
         inputpars.useSphere = true;
         
