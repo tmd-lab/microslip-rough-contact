@@ -418,7 +418,7 @@ assert(abs(val(mode_ind)-1) < 0.1, 'Normalization of experimental data is bad')
 Wst([1, 3])/2/pi
 
 if(~onnots)
-    keyboard; %dbcont
+%     keyboard; %dbcont
 %     assert(false, 'Stopping'); % Just want the frequencies
 end
 
@@ -428,6 +428,7 @@ end
 As = -7; %log10(startAmp) 
 Ae = -4.2; % log10(endAmp)
 Qamps = 10.^linspace(As, Ae, 15);
+Qamps = Qamps(1:12); % Subset actually plotted in paper.
 % Qamps = Qamps([end]);
 
 % RQNMA Settings

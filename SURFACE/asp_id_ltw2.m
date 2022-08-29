@@ -8,6 +8,7 @@ addpath('./ASP_ID/')
 addpath('../ROUTINES/FEM/')
 addpath('../ROUTINES/')
 
+tic
 
 %% Load Data
 
@@ -144,6 +145,7 @@ end
 % Save the git hash with the data. 
 [~,git_hash_string] = system('git rev-parse HEAD');
 
+mkdir('OUT'); % Issues a warning if exists, prevents fatal save error.
 save('./OUT/TMP.mat'); % Always have a save just in case MATLAB crashes
 
 
@@ -155,6 +157,7 @@ date = '2dec21';
 %         'git_hash_string', ...
 %         'Xmat', 'Ymat', 'Zmat', 'peakMat', 'Holes');
 
+surfs_time = toc
 
 %% Combine two surfaces with meso-scale analysis
 
@@ -163,9 +166,12 @@ date = '2dec21';
 % date = '14sep21';
 % load(sprintf('./OUT/LongTermWear/asperities_%s_R%u.mat', date, scanNum));
 
+tic;
 
 % Apply combination
 combinedSurf = COMBINE_SURFS2(surfdat{1}, surfdat{2}, combineSettings);
+
+combine_time = toc
 
 
 % Save the git hash with the data. 
