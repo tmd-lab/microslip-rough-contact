@@ -61,14 +61,6 @@ ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM; Nqp_radius = 1;
 
 ASP_FUN_PRE = @SPHERE_PLASTIC_PRE;
 
-
-%%%%%%%%%%%%%%%%%
-% % Alternative unloading equation
-% % ASP_FUN = @SPHERE_PLASTIC_PRE2;
-% ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM2; Nqp_radius = 1;
-% 
-% ASP_FUN_PRE = @SPHERE_PLASTIC_PRE2;
-
 pars.sliptype = 3; % Setting divisible by 2 will consider plasticity and Coulomb., Divisible by 3 will do min(others, CEB)
 
 %% Initialize General Info

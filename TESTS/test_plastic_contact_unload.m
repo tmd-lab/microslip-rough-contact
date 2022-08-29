@@ -53,7 +53,6 @@ Nqp_radius = 1;
 testvarargout = true;
 
 ASP_FUN = @SPHERE_PLASTIC_PRE; pars.sliptype = 3;
-% ASP_FUN = @SPHERE_PLASTIC_PRE2;
 
 
 %% Initialize General Info

@@ -39,7 +39,7 @@ function [fxyn, dfxynduxyn, rq0, fx0, fy0, deltam, Fm, am, ...
 %   dfddeltam - derivative w.r.t. deltam with full dependencies on Fm,am
 %               3x1 matrix. 
 %   a - contact radius, passed out here so that output positions match
-%       SPHERE_PLASTIC_PRE2 if/when dadun is needed.
+%       SPHERE_PLASTIC_PRE if/when dadun is needed.
 %   dadun - derivative of contact radius, passed out here in case it is
 %           needed to initialize damddeltam at some point.
 %
