@@ -1,6 +1,8 @@
 # microslip-rough-contact
 An open source physics-based friction model for the dynamics of jointed structures.
 
+## Paper
+
 ## Running the code
 
 1. Download the needed *.mat files from **[insert url]**.
@@ -8,7 +10,18 @@ An open source physics-based friction model for the dynamics of jointed structur
 
 ## .mat Files to Download
 
-* file1.mat to FOLDER/ % Description
+| Filename | Destination Folder | Description|
+|:---           |:---                            |:---              |
+| R05A_Before_R1.mat | SURFACE/SCANS/LongTermWear/ | Scan data for side A |
+| R05B_Before_R1.mat | SURFACE/SCANS/LongTermWear/ | Scan data for side B |
+| combined_14sept21_R1.mat.  | SURFACE/OUT/ | Baseline processed scans for most simulations|
+| combined_2dec21_R1_erode($X).mat.  | SURFACE/OUT/ | Processed scan properties for different erosion sizes. Replace ($X) with 25, 50, or 75. |
+| ROM_PD_152ELS.mat | FJSIMS/ROMS/ | Reduced order model with 152 ZTEs. Not used for paper, but is a smaller model that can be helpful for debugging. | 
+| ROM_U_232ELS.mat  | FJSIMS/ROMS/ | Reduced order model with 232 ZTEs. This version is used in the paper. |
+
+To Fill In:
+* Example results
+* Experimental results for plots
 
 ## Top Level Scripts
 
@@ -68,4 +81,8 @@ paper, not all data is provided, but scripts show an example plot.
 EXPERIMENTAL_DATA folder contains script for processing experimental data for plots
 
 * EXPERIMENTAL_DATA/ltw_trim_bb.m % Additional processing of experimental data
-        
+
+## References
+
+
+
