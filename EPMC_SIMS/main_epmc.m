@@ -37,7 +37,7 @@ else
     myCluster = parpool('threads');
 
     %set working directory:
-    workdir = [getenv('SHARED_SCRATCH') filesep getenv('USER') filesep 'microslip-rough-cont' filesep 'EPMC_SIMS'];
+    workdir = [getenv('SHARED_SCRATCH') filesep getenv('USER') filesep 'microslip-rough-contact' filesep 'EPMC_SIMS'];
     cd(workdir);
     
     mkdir('Results'); % Issues a warning if exists, prevents fatal save error.
