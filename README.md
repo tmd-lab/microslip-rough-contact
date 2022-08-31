@@ -84,5 +84,45 @@ EXPERIMENTAL_DATA folder contains script for processing experimental data for pl
 
 ## References
 
+Please see references in the journal paper above. 
+
+Additional Notes:
+
+Many nonlinear solver routines are used from: https://github.com/Nidish96/octave-jim
+
+Distinguishable colors for plots are generated use code from: https://www.mathworks.com/matlabcentral/fileexchange/29702-generate-maximally-perceptually-distinct-colors
 
 
+## Acknowledgments
+
+The authors would like to thank Nidish Narayanaa Balaji, Iyabo Lawal, and Scott A. Smith for conducting experiments and sharing data for the Brake-Reuss Beam. 
+
+Funding: 
+This material is based upon work
+	supported by the U.S. Department of Energy, Office of
+	Science, Office of Advanced Scientific Computing
+	Research, Department of Energy Computational Science
+	Graduate Fellowship under Award Number(s) DE-SC0021110.
+  This work was supported in part by the Big-Data Private-Cloud Research
+  Cyberinfrastructure MRI-award funded by NSF under grant CNS-1338099 
+  and by Rice University.
+The authors are thankful for the support of the National
+Science Foundation under Grant Number 1847130.
+
+This report was prepared as an account of
+work sponsored by an agency of the United States
+Government. Neither the United States Government nor
+any agency thereof, nor any of their employees, makes
+any warranty, express or implied, or assumes any legal
+liability or responsibility for the accuracy, completeness,
+or usefulness of any information, apparatus, product, or
+process disclosed, or represents that its use would not
+infringe privately owned rights. Reference herein to any
+specific commercial product, process, or service by trade
+name, trademark, manufacturer, or otherwise does not
+necessarily constitute or imply its endorsement,
+recommendation, or favoring by the United States
+Government or any agency thereof. The views and
+opinions of authors expressed herein do not necessarily
+state or reflect those of the United States Government or
+any agency thereof.
