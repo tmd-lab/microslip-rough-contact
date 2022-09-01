@@ -7,7 +7,7 @@ message: >-
   using using the metadata from this file.
 type: software
 authors:
-  - given-names: Justin
+  - given-names: Justin H.
     family-names: Porter
     email: jp88@rice.edu
     affiliation: Rice University
