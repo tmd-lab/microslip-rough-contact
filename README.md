@@ -8,7 +8,13 @@ This code is provided to aid in research, no guarantee is made for the accuracy 
 ## Running the code
 
 1. Download the needed *.mat files from **[insert url]**.
-2. Run the top level function from the list below.
+2. Most of the time, just run the top level function from the list below. Additional details are noted below.
+
+### SURFACE
+
+### RQNMA
+
+### EPMC
 
 
 
@@ -22,10 +28,16 @@ This code is provided to aid in research, no guarantee is made for the accuracy 
 | combined_2dec21_R1_erode($X).mat.  | SURFACE/OUT/ | Processed scan properties for different erosion sizes. Replace ($X) with 25, 50, or 75. |
 | ROM_PD_152ELS.mat | FJSIMS/ROMS/ | Reduced order model with 152 ZTEs. Not used for paper, but is a smaller model that can be helpful for debugging. | 
 | ROM_U_232ELS.mat  | FJSIMS/ROMS/ | Reduced order model with 232 ZTEs. This version is used in the paper. |
+|rqnm_paper18.mat | FJSIMS/Results/PAPER/alphaRuns/ | Numerical Results for elastic model with spheres used in plotting examples |
+|epmc_paper_run10_v2_pre.mat | EPMC_SIMS/Results/PAPER/Run10/ | Numerical results for initial state of solver for EPMC with elastic spheres used in plotting examples | 
+|epmc_paper_run10_v2_iter.mat | EPMC_SIMS/Results/PAPER/Run10/ | Numerical results for EPMC solver with elastic spheres used in plotting examples |
+|LTW_Mode1Trimmed_27Sept2021 |EXPERIMENTAL_DATA/ | Experimental backbone data for comparison to numerical results, mode 1 | 
+|LTW_Mode2Trimmed_27Sept2021 |EXPERIMENTAL_DATA/ | Experimental backbone data for comparison to numerical results, mode 2 | 
 
-To Fill In:
-* Example results
-* Experimental results for plots
+Notes:
+
+1. Additional scans of the same set of interfaces ending in "R2" are also provided and should be in a format that can be used with the surface processing scripts. These were not used in this project.
+
 
 ## Top Level Scripts
 
