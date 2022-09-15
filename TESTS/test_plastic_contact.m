@@ -59,10 +59,6 @@ testvarargout = false;
 % ASP_FUN = @SPHERE_PLASTIC_PRE;
 ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM; Nqp_radius = 1;
 
-% Alternative unloading equation
-% ASP_FUN = @SPHERE_PLASTIC_PRE2;
-% ASP_FUN = @SPHERE_PL_TAN_DECOUPLE_PL_NORM2; Nqp_radius = 1;
-
 % Under development:
 % ASP_FUN = @ELLIPSOID_PLASTIC_PRE;
 
