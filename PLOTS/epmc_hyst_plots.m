@@ -32,7 +32,7 @@ colors_plots = DISTINGUISHABLE_COLORS(13, 'w');
 
 plot_indices = 1;% [1, 5, 32];
 
-plot_set = 5;
+plot_set = 2;
 
 desired_freq_shift = 3.5; % Hz - for choosing points consistently
 clims_input = [0, 0.08];
@@ -40,33 +40,6 @@ clims_input = [0, 0.08];
 
 switch plot_set
     
-    
-    case 1
-        % Initial development of the plot
-        run_name = 'plots1';
-
-        % tmp = load('Results/TMD2021/epmc_tmd_abs_run1.mat');
-        tmp = load('../EPMC_SIMS/Results/TMD2021/Full/epmc_tmd_absV2_run1_iter69.mat');
-
-        load('../EPMC_SIMS/Results/TMD2021/Full/epmc_tmd_absV2_run1_GM.mat');
-
-        % % 152 ZTE Model
-        load('../FJSIMS/ROMS/ROM_PD_152ELS.mat', 'M', 'K', 'R', 'Fv', 'L', 'TFMfhcb', 'MESH');
-
-
-        Uwxa = tmp.Ulc(:, 69); %1-69
-
-        % Nice Shapes: 4, 9, 11, 22, 27, 38, 39, 46, 68, 97, 98, 104, 115, 145
-        % Multiple harmonics: 43
-
-        plot_indices = [4, 9, 11, 22, 38, 39, 46, 68, 97, 98, 104, 115, 145];
-        
-        h = 0:3;
-        Nhc = sum((h==0)+2*(h~=0)); %Number of Harmonic Coordinates
-
-        Nt = 2^7;
-        Fl = kron([0; 1; 0; zeros(Nhc-3,1)], L(end,:)'); %Pull out the point where the 90deg phase constraint
-
 
     case 2
         %%%%%%% PAPER: Elastic, mu = 0.03

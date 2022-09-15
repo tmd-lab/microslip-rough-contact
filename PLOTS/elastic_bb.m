@@ -14,7 +14,7 @@ addpath('../ROUTINES/')
 % Viscous damping to add to all sims
 z_visc_opts = [0.087e-2, 0.034e-2]; % Mode 1,2
 
-plot_set = 12;
+plot_set = 6;
 
 %% Plot Data to Load etc
 
@@ -164,6 +164,46 @@ switch plot_set
         Wlim = [171, 180];
         Zlim = [7e-4 2e-2];
         
+    case 6
+        %%%%%%%%%%%%% PAPER: EPMC Physics
+        NAMES = {'../FJSIMS/Results/PAPER/alphaRuns/rqnm_paper18.mat', ... % Sphere
+                 {'../EPMC_SIMS/Results/PAPER/Run10/epmc_paper_run10_v2_pre.mat'...
+                            '../EPMC_SIMS/Results/PAPER/Run10/epmc_paper_run10_v2_iter.mat'},... % Elastic EPMC
+                 };
+             
+        RQNMA_EPMC = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+        FIG_TITLE = 'EPMC_RQNMA_example';
+        
+        Rindex = 6;
+        
+        legend_names = {'Elastic, RQNMA, $\mu$=0.03', ... % rqnm 18
+                        'Elastic, EPMC, $\mu$=0.03', ... %10
+                        };
+
+
+        plot_markers = {'s-', '^--','h-', 'o--', 'v-', '>--', 'd:', 'p-', '<--', '>:'};
+        color_inds = [19, 13, 12, 15, 21, 22, 24:30];
+        marker_size = [10, 7, 7, 6, 7, 7, 7, 6, 6];
+        
+        line_width = 3;
+
+        %%%%%% FULL PLOT
+        numTrim = [0, 0]; % Number of amplitudes to trim off [start, end] of rqnma
+        Qlim = [1e-1, 1e2];
+        Wlim = [154.5, 185];
+        Zlim = [7e-4 1e-1];
+        leg_down = .05;
+
+                
+        eliminateInds = {{[]}, {[12]}, {[]}, {[11]}, {[13:15]}, {[14]}, {[]}, {[]}, {[]}};
+        
+%         %%%% ZOOM IN PLOT
+%         numTrim = [0, 0]; % Number of amplitudes to trim off [start, end] of rqnma
+%         Qlim = [1e-1, 1e2];
+%         Wlim = [171.3, 184];
+%         Zlim = [7e-4 1.1e-2];
+%         SuppressLegend = 'off';
+%         extra_info = '_Zoom';
     case 7
         %%%%%%%%%%%%% PAPER: EPMC Physics
         NAMES = {'../FJSIMS/Results/PAPER/alphaRuns/rqnm_paper18.mat', ... % Sphere
