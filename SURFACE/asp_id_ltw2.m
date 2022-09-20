@@ -58,7 +58,7 @@ mesoSettings.drawPlots = true;
 
 %%%%%%%%%%%%% Asperity ID Step
 
-settings.cleanLength = 50; % Default should be 2.
+settings.cleanLength = 2; % Default should be 2.
 settings.partialArea = true;
 
 %%%%%%%%%%%%% Interface Combination Step

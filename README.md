@@ -7,12 +7,45 @@ This code is provided to aid in research, no guarantee is made for the accuracy 
 
 ## Running the code
 
+All computations for the project were run with MATLAB/2020a.
+
 1. Download the needed *.mat files from **[insert url]**.
 2. Most of the time, just run the top level function from the list below. Additional details are noted below.
 
 ### SURFACE
 
+1. Open "SURFACE/asp_id_ltw2.m"
+2. Set the scans to use on lines 15 and 16. 
+3. Settings can be changed under "Process Settings" for a variety of the steps. Code comments describe the different settings. These settings are as used in the paper. The only setting changed for the paper was "settings.cleanLength" which was varied from 2 to 75 to test different erosion sizes. Most simulations used a size of 2.
+4. Run the full code. 
+5. A temporary file is written out on line 149 in case one wants to restart after that point. If restarting, the code will need to be modified to load the saved data.
+6. Make sure to save the final outputs. Save lines are currently commented out at the bottom of the script. 
+
 ### RQNMA
+
+1. RQNMA simulations are run with "FJSIMS/main_rqnm.m", which contains the function "main_rqnm()". Passing a number into the "main_rqnm" function sets the choice of parameters. The different parameter cases are defined in "FJSIMS/rqnm_pars.m"
+2. To create a new case, copy an existing case such as case 4 that defines all of the parameters needed for the input. If only modifying a few parameters from an existing case, you can also reference a previous case as shown in some examples (e.g., case 12). Parameters are:
+   a. mu - friction coefficient
+   b. ElasticModulus - elastic modulus (Pa)
+   c. nu - Poisson's ratio
+   d. mesoscale - true uses the defined mesoscale topology in the surface processing. false uses a flat interface.
+   e. asp_fun - function handle for the asperity contact model. "ELLIPSOID_IWAN_DECOUPLE" is the decoupled Mindlin-Iwan Constant model from the paper. "ELLIPSOID_IWAN_FIT_(DE)COUPLE" refers to the (de)coupled Mindlin-Iwan Fit model from the paper.
+   f. Nqp_radius - number of quadrature points in the radial direction for the asperity contact. Commented out lines have both this and the asperity function with the values used in the paper. 
+   g. alpha - Asperity rotation angle (see Section 2.3.1 of paper). 
+   h. useSphere - true sets the contact models to be spheres, false uses ellipsoids. 
+   i. Nqp_heights - number of quadrature points for integrating over initial asperity gaps. 
+   j. meshName - "UROM232" refers to the mesh used in the paper and the file provided. "zte152" refers to a smaller mesh that is also provided and can be used for debugging. 
+   k. meshNameRelative - not relevant, just leave as ''. 
+   l. output_name - Name for file output. 
+   m. load_initial - this should not be relevant anymore. 
+   n. repeatLoop - number of times to repeat the cycle from +q to -q to +q in RQNMA solver. 
+   o. Nhp - number of quadrature points per segment in RQNMA solver. 
+3. Set "nots_min_cores" at the top of "main_rqnm.m". If there are fewer than this number of cores, it assumes it is running locally and does not need to set variables for running on a cluster. If there are more cores, additional steps are taken. 
+4. If running on a cluster (with more cores than "nots_min_cores"), set the work directory on line 40 of "main_rqnm.m". This should be the directory where the code is saved and where it is being run. 
+5. Define the amplitude levels of interest with "Qamps" on line 431. These are modal amplitudes as defined by RQNMA that the solution will be found at. 
+6. Other properties for RQNMA can be set at around line 435-444, but these should not need to be changed. 
+7. Save the output. Currently, it is set to only save on line 456 if running on a cluster. Make sure to put a break point or change this otherwise the function call may exit without saving the output data. 
+8. Run the code. An example of slurm file is provided only for EPMC if running on a cluster, but could easily be modified for RQNMA runs. 
 
 ### EPMC
 
