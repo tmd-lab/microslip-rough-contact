@@ -76,6 +76,26 @@ The procedure for running EPMC is very similar to that of RQNMA.
 6. Additional settings for continuation and the solver can be found on line 638, but these should not need to be changed. 
 7. Run the code. An example of slurm file is provided as 'EPMC_SIMS/run_epmcX.slum' which runs the epmc simulation with parameters set by the environment variable X. Calling 'source submitX.sh' will submit EPMC runs based on the do loop in the file 'submitX.sh'.
 
+### Key Plots
+
+PLOTS/elastic_bb.m produces the backbone plots for the entire paper:
+
+1. Set the appropriate level of viscous damping for the modes of interest on line 15. 
+2. Select the plot set of interest with the variable 'plot_set' (line 17). 
+3. Copy an existing case. Case 6 provides an example for both RQNMA and EPMC.
+4. For RQNMA simulations only one filename is needed for the data. For EPMC simulations, two files are provided, one for the data saved before the simulation starts and another for the iteration results.
+5. All of the other parameters control formatting the plot. 
+6. Data is provided for plot_set = 6 as an example.
+
+PLOTS/epmc_hyst_plots.m produces the plots of local hysteresis loops for the paper:
+
+1. Set plot_set on line 35 to select which case of loaded data to use. Data is provided for plot_set = 2. 
+2. Set the run_name for saving output. 
+3. Load the vector of harmonic displacements of interest into the variable Uwxa. This vector is a stack of the harmonic displacements, the frequency, the damping from EPMC, and the amplitude. 
+4. plot_indices sets which elements to show plots of. 
+5. paper_plot controls the output indices for the paper format of figures. 
+6. plot_letters on line 203 controls the letters used for labeling the mesh. 
+
 ## .mat Files to Download
 
 | Filename | Destination Folder | Description|
