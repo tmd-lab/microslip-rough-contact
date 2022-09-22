@@ -14,7 +14,7 @@ All computations for the project were run with MATLAB/2020a.
 
 ### SURFACE
 
-1. Open "SURFACE/asp_id_ltw2.m"
+1. Open 'SURFACE/asp_id_ltw2.m'
 2. Set the scans to use on lines 15 and 16. 
 3. Settings can be changed under "Process Settings" for a variety of the steps. Code comments describe the different settings. These settings are as used in the paper. The only setting changed for the paper was "settings.cleanLength" which was varied from 2 to 75 to test different erosion sizes. Most simulations used a size of 2.
 4. Run the full code. 
@@ -24,22 +24,22 @@ All computations for the project were run with MATLAB/2020a.
 ### RQNMA
 
 1. RQNMA simulations are run with "FJSIMS/main_rqnm.m", which contains the function "main_rqnm()". Passing a number into the "main_rqnm" function sets the choice of parameters. The different parameter cases are defined in "FJSIMS/rqnm_pars.m"
-2. To create a new case, copy an existing case such as case 4 that defines all of the parameters needed for the input. If only modifying a few parameters from an existing case, you can also reference a previous case as shown in some examples (e.g., case 12). Parameters are:
-   a. mu - friction coefficient
-   b. ElasticModulus - elastic modulus (Pa)
-   c. nu - Poisson's ratio
-   d. mesoscale - true uses the defined mesoscale topology in the surface processing. false uses a flat interface.
-   e. asp_fun - function handle for the asperity contact model. "ELLIPSOID_IWAN_DECOUPLE" is the decoupled Mindlin-Iwan Constant model from the paper. "ELLIPSOID_IWAN_FIT_(DE)COUPLE" refers to the (de)coupled Mindlin-Iwan Fit model from the paper.
-   f. Nqp_radius - number of quadrature points in the radial direction for the asperity contact. Commented out lines have both this and the asperity function with the values used in the paper. 
-   g. alpha - Asperity rotation angle (see Section 2.3.1 of paper). 
-   h. useSphere - true sets the contact models to be spheres, false uses ellipsoids. 
-   i. Nqp_heights - number of quadrature points for integrating over initial asperity gaps. 
-   j. meshName - "UROM232" refers to the mesh used in the paper and the file provided. "zte152" refers to a smaller mesh that is also provided and can be used for debugging. 
-   k. meshNameRelative - not relevant, just leave as ''. 
-   l. output_name - Name for file output. 
-   m. load_initial - this should not be relevant anymore. 
-   n. repeatLoop - number of times to repeat the cycle from +q to -q to +q in RQNMA solver. 
-   o. Nhp - number of quadrature points per segment in RQNMA solver. 
+2. To create a new case, copy an existing case such as case 4 that defines all of the parameters needed for the input. If only modifying a few parameters from an existing case, you can also reference a previous case as shown in some examples (e.g., case 12). parameters are:
+   1. mu - friction coefficient
+   2. ElasticModulus - elastic modulus (Pa)
+   3. nu - Poisson's ratio
+   4. mesoscale - true uses the defined mesoscale topology in the surface processing. false uses a flat interface.
+   5. asp_fun - function handle for the asperity contact model. "ELLIPSOID_IWAN_DECOUPLE" is the decoupled Mindlin-Iwan Constant model from the paper. "ELLIPSOID_IWAN_FIT_(DE)COUPLE" refers to the (de)coupled Mindlin-Iwan Fit model from the paper.
+   6. Nqp_radius - number of quadrature points in the radial direction for the asperity contact. Commented out lines have both this and the asperity function with the values used in the paper. 
+   7. alpha - Asperity rotation angle (see Section 2.3.1 of paper). 
+   8. useSphere - true sets the contact models to be spheres, false uses ellipsoids. 
+   9. Nqp_heights - number of quadrature points for integrating over initial asperity gaps. 
+   10. meshName - "UROM232" refers to the mesh used in the paper and the file provided. "zte152" refers to a smaller mesh that is also provided and can be used for debugging. 
+   11. meshNameRelative - not relevant, just leave as ''. 
+   12. output_name - Name for file output. 
+   13. load_initial - this should not be relevant anymore. 
+   14. repeatLoop - number of times to repeat the cycle from +q to -q to +q in RQNMA solver. 
+   15. Nhp - number of quadrature points per segment in RQNMA solver. 
 3. Set "nots_min_cores" at the top of "main_rqnm.m". If there are fewer than this number of cores, it assumes it is running locally and does not need to set variables for running on a cluster. If there are more cores, additional steps are taken. 
 4. If running on a cluster (with more cores than "nots_min_cores"), set the work directory on line 40 of "main_rqnm.m". This should be the directory where the code is saved and where it is being run. 
 5. Define the amplitude levels of interest with "Qamps" on line 431. These are modal amplitudes as defined by RQNMA that the solution will be found at. 
@@ -49,7 +49,32 @@ All computations for the project were run with MATLAB/2020a.
 
 ### EPMC
 
+The procedure for running EPMC is very similar to that of RQNMA. 
 
+1. EPMC simulations are run with "EPMC_SIMS/main_epmc.m", which contains function "main_epmc()". Passing a number into the function sets the choice of parameters as defined in "EPMC_SIMS/epmc_pars.m". 
+2. To create a new case, copy an existing case such as case 11 that contains all of the parameters already. The parameters are: 
+   1. Sys - Yield Strength in Pa
+   2. mu - friction coefficient (set to a large value if using CEB friction coefficient). 
+   3. ElasticModulus - elastic modulus of the asperities. This is just used for the asperities for the provided meshes. The provided value was also used in the model creation for the provided models. 
+   4. nu - Poisson's ratio
+   5. sliptype - slip type to be used for the model. 1 is for just using friction coefficient mu, 3 is CEB friction and limited by mu. 
+   6. mesoscale - true to use the measured mesoscale topology, false to use a flat interface.
+   7. unloadModel - setting previously used to change between different unloading models for spheres after plastic deformation. Code is only provided for the option 'brake'
+   8. useSphere - calculates some parameters for contact as if the asperities were spheres instead of ellipsoids. EPMC implementation with plasticity only supports spheres.
+   9. Et - tangent modulus after yielding of the asperities, units of Pa. 
+   10. meshName - 'UROM232' was used for the paper. 'zte152' is also provided and can be used as a smaller model for debugging. 
+   11. output_name - output filename to save after every completed solution step of continuation. Results are automatically put in a folder called 'EPMC_SIMS/Results'
+   12. load_initial - use False to start a new simulation, set to true along with 'prevInd' and 'loadName' to restart a simulation.
+   13. prevInd - index to use from a loaded file when restarting. 
+   14. loadName - file to load to restart, needs to start with 'Results/' if loading a file that was saved in the Results folder. 
+   15. arcSettings.da - initial step size to take in continuation. 
+   16. arcSettings.dsmax - maximum step size to allow in continuation. 
+   17. arcSettings.dsmin - minimum step size to allow in continuation. 
+3. Set "nots_min_cores" at the top of "main_epmc.m". If there are fewer than this number of cores, it assumes it is running locally and does not need to set variables for running on a cluster. If there are more cores, additional steps are taken. 
+4. If running on a cluster (with more cores than "nots_min_cores"), set the work directory on line 40 of "main_epmc.m". This should be the directory where the code is saved and where it is being run. 
+5. Define the amplitude levels of interest with As (start amplitude on a log scale) and Ae (end amplitude on a log scale). 
+6. Additional settings for continuation and the solver can be found on line 638, but these should not need to be changed. 
+7. Run the code. An example of slurm file is provided as 'EPMC_SIMS/run_epmcX.slum' which runs the epmc simulation with parameters set by the environment variable X. Calling 'source submitX.sh' will submit EPMC runs based on the do loop in the file 'submitX.sh'.
 
 ## .mat Files to Download
 
@@ -69,7 +94,7 @@ All computations for the project were run with MATLAB/2020a.
 
 Notes:
 
-1. Additional scans of the same set of interfaces ending in "R2" are also provided and should be in a format that can be used with the surface processing scripts. These were not used in this project.
+1. Additional scans of the same set of interfaces ending in 'R2' are also provided and should be in a format that can be used with the surface processing scripts. These were not used in this project.
 
 
 ## Top Level Scripts
@@ -92,7 +117,7 @@ EPMC_SIMS folder contains EPMC simulations.
 
 * EPMC_SIMS/main_epmc.m % main file to run to do an EPMC simulation. Pass in argument for which parameter number (default 0)
 * EPMC_SIMS/epmc_pars.m % parameters for running specific EPMC simulations, this file is not directly run.
-* EPMC_SIMS/submitX.sh % used to submit runs to slurm system with "source submitX.sh"
+* EPMC_SIMS/submitX.sh % used to submit runs to slurm system with 'source submitX.sh'
 * EPMC_SIMS/run_epmcX.slurm % file for running an individual slurm job
 
 ### TESTS
