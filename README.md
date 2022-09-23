@@ -3,14 +3,14 @@ An open source physics-based friction model for the dynamics of jointed structur
 
 This code is provided to aid in research, no guarantee is made for the accuracy of the results when applied to other structures. If this code is useful, please cite the journal paper:
 
-'''
+```
 @article{porterTowardsAPredictive,
 	title = {Towards a Predictive, Physics-Based Friction Model for the Dynamics of Jointed Structures},
 	journal = {Mechanical Systems and Signal Processing},
 	author = {Porter, J.~H. and Brake, M.~R.~W.},
 	year = {Under Review},
 }
-'''
+```
 
 ## Running the code
 
