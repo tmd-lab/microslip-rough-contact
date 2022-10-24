@@ -1,8 +1,7 @@
 # microslip-rough-contact
 An open source physics-based friction model for the dynamics of jointed structures.
 
-This code is provided to aid in research, no guarantee is made for the accuracy of the results when applied to other structures. If this code is useful, please cite the journal paper:
-
+This code is provided free of charge with minimal support under the condition that you cite the corresponding paper: 
 ```
 @article{porterTowardsAPredictive,
 	title = {Towards a Predictive, Physics-Based Friction Model for the Dynamics of Jointed Structures},
@@ -11,6 +10,7 @@ This code is provided to aid in research, no guarantee is made for the accuracy 
 	year = {Under Review},
 }
 ```
+This code is provided to aid in research, no guarantee is made for the accuracy of the results when applied to other structures.
 
 ## Running the code
 
