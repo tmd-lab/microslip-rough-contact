@@ -1,6 +1,7 @@
 # microslip-rough-contact
-An open source physics-based friction model for the dynamics of jointed structures.
+An open source physics-based friction model for the dynamics of jointed structures. 
 
+This modeling framework is described in the included journal paper [paper_preprint.pdf](https://github.com/tmd-lab/microslip-rough-contact/blob/main/paper_preprint.pdf).
 This code is provided free of charge with minimal support under the condition that you cite the corresponding paper: 
 ```
 @article{porterTowardsAPredictive2023,
