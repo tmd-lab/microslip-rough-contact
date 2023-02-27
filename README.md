@@ -3,20 +3,25 @@ An open source physics-based friction model for the dynamics of jointed structur
 
 This code is provided free of charge with minimal support under the condition that you cite the corresponding paper: 
 ```
-@article{porterTowardsAPredictive,
-	title = {Towards a Predictive, Physics-Based Friction Model for the Dynamics of Jointed Structures},
-	journal = {Mechanical Systems and Signal Processing},
-	author = {Porter, J.~H. and Brake, M.~R.~W.},
-	year = {Under Review},
+@article{porterTowardsAPredictive2023,
+    title = {Towards a predictive, physics-based friction model for the dynamics of jointed structures},
+    journal = {Mechanical Systems and Signal Processing},
+    volume = {192},
+    pages = {110210},
+    year = {2023},
+    issn = {0888-3270},
+    doi = {10.1016/j.ymssp.2023.110210},
+    author = {Justin H. Porter and Matthew R.W. Brake},
+
 }
 ```
-This code is provided to aid in research, no guarantee is made for the accuracy of the results when applied to other structures.
+This code is provided under the MIT License to aid in research, no guarantee is made for the accuracy of the results when applied to other structures.
 
 ## Running the code
 
-All computations for the project were run with MATLAB/2020a.
+All computations for the project were run with MATLAB/2020a. Most computations were run on Linux systems.
 
-1. Download the needed *.mat files from **[insert url]**.
+1. Download the needed *.mat files from [here](https://rice.box.com/s/0uxlv7upy85zicd8ak5fqimvsb1u6y2m).
 2. Most of the time, just run the top level function from the list below. Additional details are noted below.
 
 ### SURFACE
