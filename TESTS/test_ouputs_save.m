@@ -185,7 +185,9 @@ function [normal_disp, a_list, fn_list, ux, uy, fx, fy] = produce_results(full_p
 
     for i = 1:length(normal_disp)
 
-        uxyn = [normal_disp(i), 1e-6+0.5*normal_disp(i), normal_disp(i)];
+        uxyn = [normal_disp(i)-un_shift, ...
+                1e-6+0.5*(normal_disp(i)-un_shift), ...
+                normal_disp(i)];
 
         % Determine the unloading point
         [fxyn, dfxynduxyn, ~, ~, ~, deltam, Fm, am, ...
