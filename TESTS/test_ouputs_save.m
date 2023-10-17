@@ -61,11 +61,21 @@ res_list = cell(size(pars_list));
 
 for i = 1:length(pars_list)
     
-    [normal_disp, a_list, fn_list] = produce_results(pars_list{i}, ASP_FUN_PRE, un_shift{i});
+    [normal_disp, a_list, fn_list, ux, uy, fx, fy] = produce_results(pars_list{i}, ASP_FUN_PRE, ASP_FUN_TAN, un_shift{i});
     
     results.normal_disp = normal_disp;
     results.contact_radius = a_list;
     results.normal_force = fn_list;
+    
+    
+    results.x_disp = ux;
+    results.y_disp = uy;
+    results.x_force = fx;
+    results.y_force = fy;
+    
+    required_mu = max( max(abs(fx / fn_list)), max(abs(fy/fn_list)));
+    
+    assert(required_mu < pars_list{i}.mu, 'Need to raise friction coefficient for it to remain stuck.')
     
     res_list{i} = results;
     
@@ -124,7 +134,7 @@ function str = mat2str_comma(mat)
 end
 %% Produce Test Results Function
 
-function [normal_disp, a_list, fn_list] = produce_results(full_pars, ASP_FUN_PRE, un_shift)
+function [normal_disp, a_list, fn_list, ux, uy, fx, fy] = produce_results(full_pars, ASP_FUN_PRE, ASP_FUN_TAN, un_shift)
 
     un_max = 3.0*full_pars.delta_y;
     uxyn = [0, 0, un_max];
@@ -163,6 +173,10 @@ function [normal_disp, a_list, fn_list] = produce_results(full_pars, ASP_FUN_PRE
     a_list = zeros(size(normal_disp));
     fn_list = zeros(size(normal_disp));
 
+    ux = zeros(size(normal_disp));
+    uy = zeros(size(normal_disp));
+    fx = zeros(size(normal_disp));
+    fy = zeros(size(normal_disp));
 
     deltam = 0;
     Fm = 0; 
@@ -171,21 +185,25 @@ function [normal_disp, a_list, fn_list] = produce_results(full_pars, ASP_FUN_PRE
 
     for i = 1:length(normal_disp)
 
-        uxyn = [0, 0, normal_disp(i)];
+        uxyn = [normal_disp(i), 1e-6+0.5*normal_disp(i), normal_disp(i)];
 
         % Determine the unloading point
         [fxyn, dfxynduxyn, ~, ~, ~, deltam, Fm, am, ...
-            dfduxyn0, dfdfxy0, dfddeltam, a, dadun, Sys, ...
-            dSysdun, daddeltam, dSysddeltam, deltabar, ddeltabar_ddeltam, ...
-            Rebar, dRebar_ddeltam] ...
-                = ASP_FUN_PRE(full_pars, uxyn, uxyn0, rq0, fx0, fy0, rq, wq, deltam, Fm, am); 
+            dfduxyn0, dfdfxy0, dfddeltam, a, dadun] ...
+                = ASP_FUN_TAN(full_pars, uxyn, uxyn0, rq0, fx0, fy0, rq, wq, deltam, Fm, am); 
 
         fn_list(i) = fxyn(3);
         if fxyn(3) ~= 0
             a_list(i) = a;
         end
 
-        uxyn0 = uxyn;
+        uxyn0 = uxyn.*[0, 0, 1]; % don't want tangential history for these tests
+        
+        % Tangential Data
+        ux(i) = uxyn(1);
+        uy(i) = uxyn(2);
+        fx(i) = fxyn(1);
+        fy(i) = fxyn(2);
     end
 
 end
@@ -199,7 +217,7 @@ function full_pars = initialize_pars(initial_pars)
 
     G = E / 2/ (1 + nu);%304L approx Shear modulus
 
-    full_pars.mu     = 0.05; %may want to do a function of displacement - see Eriten's work
+    full_pars.mu     = 1e20; %may want to do a function of displacement - see Eriten's work
     % pars.R      = (1/Rx + 1/Ry)^(-1);%, 1e-4 is about a maximum
     full_pars.E      = E;
     full_pars.Estar  = E/2/(1 - nu^2);
