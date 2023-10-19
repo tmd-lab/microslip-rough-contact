@@ -190,7 +190,7 @@ ii = 1;
 
 prev = prev0;
 
-derivative_test = 1; %1-6+?
+derivative_test = 1; %1-7+?
 %6 is very slow / high resolution in time
 
 delta = [1e-8, 1e-9, 1e-10, 1e-12]; %displacement variation (m)
@@ -198,86 +198,7 @@ delta = [1e-8, 1e-9, 1e-10, 1e-12]; %displacement variation (m)
 
 area_density = 1; %easier to debug.
 
-switch derivative_test    
-    case 1
-        
-        % Random case
-        Nt = 2^5;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, 2e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-    case 2
-        % Separation in the middle
-        
-        Nt = 2^5;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, 1e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-            
-    case 3
-        % Low Amplitude had a bug originally, fixed now
-        
-        Nt = 2^3;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, 1e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-        
-    case 4 
-        % Minimal contact/separation throughout
-        
-        Nt = 2^3;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, .1e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, 0.1e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, 0.1e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, 0.05e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-    case 5 
-        % Late peak contact
-        Nt = 2^7;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, -.1e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, -0.1e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, -0.1e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, -0.5e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-    otherwise
-        % Very high resolution test 5 to see if there is notable error for
-        % the time of max normal varying with coefficients
-        
-        % Late peak contact
-        Nt = 2^10;
-        h = [0, 1, 2]';
-        uxyn0 = [0, .5e-5, -.1e-5];
-        uxyn1c = [0.1e-5, 0.2e-5, -0.1e-5];
-        uxyn1s = [0.3e-5, 0.2e-5, -0.1e-5];
-        uxyn2c = [0.1e-5, 0.1e-5, -0.5e-5];
-
-        uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
-        
-        
-        
-end
-
+[uxynharmonics, Nt, h] = test_selection_switch(derivative_test);
 
 % Generation function
 GEN_FUN = @(uxynharmonics) generate_time_series(uxynharmonics, Nt, h, ASP_FUN, ...
@@ -341,10 +262,133 @@ for dir = 1:size(dtxynduxynh_t, 3)
 end
 
 disp('Make sure the both for loops cover all entries');
+%% Save Outputs for Python Verification
+
+Ntests = 6;
+
+uxyn_array = cell(Ntests, 1);
+txyn_array = cell(Ntests, 1);
+gaps_array = cell(Ntests, 1);
+weights_array = cell(Ntests, 1);
+
+pars.sliptype = 1; % Just friction coefficient, no CEB
+
+
+for derivative_test = 1:Ntests
+
+    prev = prev0;
+    
+    %6 is very slow / high resolution in time
+    
+    area_density = 1; %easier to debug.
+    
+    [uxynharmonics, Nt, h] = test_selection_switch(derivative_test);
+    
+    % Generation function
+    GEN_FUN = @(uxynharmonics) generate_time_series(uxynharmonics, Nt, h, ASP_FUN, ...
+                ASP_FUN_PRE, PZFUN, pars, prev, Nqp_heights, Nqp_radius, zmin, zmax, area_density, [0,0,0]);
+    
+    
+    % Reference
+    [txyn_t, dtxynduxynh_t, t, uxyn_t] = GEN_FUN(uxynharmonics);
+
+    
+    zq = linspace(zmin, zmax, Nqp_heights);
+    wq_z = ones(size(zq));
+    wq_z(2:end-1) = 2;
+    wq_z = wq_z/sum(wq_z);
+
+    pz = PZFUN(zq);
+
+    uxyn_array{derivative_test} = uxyn_t;
+    txyn_array{derivative_test} = txyn_t;
+    weights_array{derivative_test} = wq_z .* pz*area_density;
+    gaps_array{derivative_test} = zq;
+
+    assert((norm(weights_array{derivative_test} - weights_array{1}) ...
+             + norm(gaps_array{derivative_test} - gaps_array{1})) == 0, ...
+             'Need to save out individual gaps and weights');
+
+end
+
+%% YAML File of Results for verification
+
+
+initial_pars.E = pars.E; %304L from Traction paper
+initial_pars.nu = pars.nu; %304L taken from Traction paper
+initial_pars.R = pars.Re;
+
+initial_pars.Et = pars.Et;
+initial_pars.Sys = pars.Sys; %Pa
+initial_pars.mu = pars.mu; 
+
+
+fileID = fopen('element_cycle_tractions.yaml','w');
+
+
+% fprintf(fileID,'%6s %12s\n','x','exp(x)');
+% fprintf(fileID,'%6.2f %12.8f\n',A);
+
+input_list = {initial_pars};
+% Start with the Input parameters
+fn = fieldnames(input_list{1});
+%loop through the fields
+for i = 1:numel(fn)
+    field_vals = zeros(size(input_list));
+    for j = 1:length(input_list)
+        field_vals(j) = input_list{j}.(fn{i});
+    end
+    
+    fprintf(fileID, '%s : %s \n', fn{i}, field_vals);
+end
+
+
+fprintf(fileID, 'gap_weights : %s \n', mat2str_comma(weights_array{1}));
+fprintf(fileID, 'gap_values : %s \n', mat2str_comma(gaps_array{1}));
+
+outputs = {uxyn_array, txyn_array};
+names = {'uxyn', 'txyn'};
+
+for i = 1:length(outputs)
+    fprintf(fileID, '%s : [', names{i});
+        for ind = 1:length(uxyn_array)
+            fprintf(fileID, '[');
+            for xyz = 1:3
+                fprintf(fileID, '%s, \n', mat2str_comma(outputs{i}{ind}(:, xyz)));
+            end
+            fprintf(fileID, '], \n');
+        end
+    fprintf(fileID, '] \n');
+end
+% % Start with the Output Results
+% fn = fieldnames(res_list{1});
+% %loop through the fields
+% for i = 1:numel(fn)
+%     fprintf(fileID, '%s : [', fn{i});
+%     field_vals = res_list{1}.(fn{i});
+%     fprintf(fileID, '%s', mat2str_comma(field_vals));
+%     for j = 2:length(res_list)
+%         field_vals = res_list{j}.(fn{i});
+%         fprintf(fileID, ', %s', mat2str_comma(field_vals));
+%     end
+%     
+%     fprintf(fileID, '] \n');
+% end
+
+fclose(fileID);
+
+
 
 %% Function to generate time series
-function [txyn_t, dtxynduxynh_t, t, uxyn_t] = generate_time_series(uxynharmonics, Nt, h, ASP_FUN, ASP_FUN_PRE, PZFUN, pars, prev, Nqp_heights, Nqp_radius, zmin, zmax, area_density)
+function [txyn_t, dtxynduxynh_t, t, uxyn_t] = generate_time_series(uxynharmonics, ...
+            Nt, h, ASP_FUN, ASP_FUN_PRE, PZFUN, pars, prev, Nqp_heights, ...
+            Nqp_radius, zmin, zmax, area_density, varargin)
 
+    if length(varargin) == 0
+        mult_uxyn0 = [1, 1, 1];
+    else
+        mult_uxyn0 = varargin{1};
+    end
 
     %%%%%%%%% Block from EPMCRESFUN
     uxyn_t = TIMESERIES_DERIV(Nt, h, uxynharmonics, 0);  % Nt x Ndnl
@@ -362,7 +406,7 @@ function [txyn_t, dtxynduxynh_t, t, uxyn_t] = generate_time_series(uxynharmonics
     uxyn_init = uxynharmonics(1, :); % Start Tangential Models with Zeroth Harmonic displacements (phase invariance if does not slip).
     [uxyn_init(3), unmax_ind] = max(uxyn_t(:, 3));
 %     uxyn0 = uxyn_t(1, :);
-    uxyn0 = uxyn_init;
+    uxyn0 = uxyn_init.*mult_uxyn0;
 
     % derivative of maximum normal w.r.t. the harmonic coefficients
     ddeltamduxynh = reshape(cst(unmax_ind, :), 1, 1, []);
@@ -395,4 +439,114 @@ function [txyn_t, dtxynduxynh_t, t, uxyn_t] = generate_time_series(uxynharmonics
 
     end
 
+end
+
+%% Function for Generating Test Cases to Use
+
+function [uxynharmonics, Nt, h] = test_selection_switch(derivative_test)
+    switch derivative_test    
+        case 1
+            
+            % Random case
+            Nt = 2^5;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, 2e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+            
+        case 2
+            % Separation in the middle
+            
+            Nt = 2^5;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, 1e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+            
+                
+        case 3
+            % Low Amplitude had a bug originally, fixed now
+            
+            Nt = 2^3;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, 1e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, 0.05e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, 0.05e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, 0.02e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+            
+            
+        case 4 
+            % Minimal contact/separation throughout
+            
+            Nt = 2^3;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, .1e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, 0.1e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, 0.1e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, 0.05e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+            
+        case 5 
+            % Late peak contact
+            Nt = 2^7;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, -.1e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, -0.1e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, -0.1e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, -0.5e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+
+        case 6
+            
+            % Random case w/o initial slip
+            Nt = 2^5;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, 2e-5];
+            uxyn1c = 0*[0.1e-5, 0.2e-5, 0.05e-5];
+            uxyn1s = [0.4e-5, 0.4e-5, 0.08e-5];
+            uxyn2s = [0.1e-5, 0.1e-5, 0.02e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; zeros(1, 3); uxyn2s];
+            
+        otherwise
+            % Very high resolution test 5 to see if there is notable error for
+            % the time of max normal varying with coefficients
+            
+            % Late peak contact
+            Nt = 2^10;
+            h = [0, 1, 2]';
+            uxyn0 = [0, .5e-5, -.1e-5];
+            uxyn1c = [0.1e-5, 0.2e-5, -0.1e-5];
+            uxyn1s = [0.3e-5, 0.2e-5, -0.1e-5];
+            uxyn2c = [0.1e-5, 0.1e-5, -0.5e-5];
+    
+            uxynharmonics = [uxyn0; uxyn1c; uxyn1s; uxyn2c; zeros(1, 3)];
+            
+            
+            
+    end
+end
+
+
+%% Matrix to Str with comma: 
+% n = [12345 6789 10234 3452]*1e-3;
+% 
+% str = mat2str_comma(n)
+    
+function str = mat2str_comma(mat)
+    
+    str = sprintf('%.12e,' , mat);
+    str = str(1:end-1);% strip final comma
+
+    str = "[" + str + "]";
 end
