@@ -10,6 +10,10 @@
 %       are very large and are not needed in the planned analyses
 
 clear;
+%% Routines locations
+
+addpath('../ROUTINES/')
+addpath('../ROUTINES/FEM/')
 
 %% File To Load
 
