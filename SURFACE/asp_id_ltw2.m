@@ -99,12 +99,14 @@ clear tmp xyzPatches vertsPatches xyzPatches_ungridded
 
 meso_surf = cell(2, 1);
 xyh_points = cell(2, 1);
+xyh_meso_points = cell(2,1);
 
 for topbot = 1:length(scandat)
     
     mesoSettings.flip = (topbot == 2);
     
-    [meso_surf{topbot}, xyh_points{topbot}] = CALC_MESOSCALE(griddat{topbot}, mesoSettings);
+    [meso_surf{topbot}, xyh_points{topbot}, xyh_meso_points{topbot}] = ...
+            CALC_MESOSCALE(griddat{topbot}, mesoSettings);
 end
 
 % New Vertices are the grid range vertices
@@ -189,4 +191,9 @@ combine_time = toc
 %                 'combineSettings', 'gridSettings', 'mesoSettings', 'settings', ...
 %                 'git_hash_string');
  
+% Additional save including the mesoscale grid points
+% save(sprintf('./OUT/combined_%s_R%u_erode%u.mat', date, scanNum, settings.cleanLength), ...
+%                 'combinedSurf', 'meso_surf', ...
+%                 'combineSettings', 'gridSettings', 'mesoSettings', 'settings', ...
+%                 'git_hash_string', 'xyh_meso_points');
 

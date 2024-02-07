@@ -1,4 +1,4 @@
-function [mesoscale_fit, xyh_points] = CALC_MESOSCALE(griddat, settings)
+function [mesoscale_fit, xyh_points, xyh_meso_points] = CALC_MESOSCALE(griddat, settings)
 % Function calculates the mesoscale fit of the surface data in griddat
 %
 % Inputs:
@@ -95,6 +95,9 @@ function [mesoscale_fit, xyh_points] = CALC_MESOSCALE(griddat, settings)
     xyh_points = xyz_orig;
     xyh_points(:, 3) = xyh_points(:, 3) - mesoscale_fit(xyh_points(:, 1:2));
 
+    %% Return the Mesoscale Points used in the interpolation
+    xyh_meso_points = {X, Y, filtered_heights};
+    
     %% Plots for Verifying Results
     
     if(drawPlots)
