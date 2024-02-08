@@ -17,13 +17,17 @@ addpath('../ROUTINES/FEM/')
 
 %% File To Load
 
-input_name = '../FJSIMS/ROMS/ROM_U_232ELS';
-output_name = 'ROM_U_232ELS4py.mat';
+% input_name = '../FJSIMS/ROMS/ROM_U_232ELS';
+% output_name = 'ROM_U_232ELS4py.mat';
+% output_dir = '../FJSIMS/ROMS/for_py';
+
+input_name = '../FJSIMS/ROMS/ROM_U_122ELS';
+output_name = 'ROM_U_122ELS4py.mat';
 output_dir = '../FJSIMS/ROMS/for_py';
 
 %% Load Baseline Matrices
 
-load('../FJSIMS/ROMS/ROM_U_232ELS');
+load(input_name);
 
 %% Generate Quadrature Mapping
 
