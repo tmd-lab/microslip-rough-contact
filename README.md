@@ -17,6 +17,7 @@ This code is provided free of charge with minimal support under the condition th
 }
 ```
 This code is provided under the MIT License to aid in research, no guarantee is made for the accuracy of the results when applied to other structures.
+A python implementation of some of these models is now available [here](https://github.com/tmd-lab/tmdsimpy).
 
 ## Running the code
 
