@@ -16,6 +16,14 @@ set(groot, 'defaultTextInterpreter','latex');
 
 addpath('../ROUTINES/')
 
+%% Start a file to save force displacement relationships for MIF model
+% for additional tests of Python implementation.
+
+fileID = fopen('mif_tangential_asperity.yaml','w');
+
+N_test = 1000;  % 1000 was used in paper plots, 20 should be good for tests
+
+
 %% Define Parameters 
 % Parameters are shared between all models 
 
@@ -59,6 +67,14 @@ delta_y1s = (pi*C*Sys/(2*(2*pars.Estar)))^2*(2*pars.R); %displacement of one sph
 pars.delta_y = delta_y1s*2;
 pars.Sys = Sys;
 pars.Et = 0.01*pars.E;
+
+% Save material properties / asperity properties used
+fprintf(fileID, 'E : %f \n', pars.E);
+fprintf(fileID, 'nu : %f \n', pars.nu);
+fprintf(fileID, 'R : %f \n', pars.R);
+fprintf(fileID, 'Et : %f \n', pars.Et);
+fprintf(fileID, 'Sys : %s \n', 'inf');
+
 
 %% Asperity Model Lists + Details
 
@@ -158,7 +174,6 @@ end
 
 hyst_amp = 1.5; 
 un = 1e-5;
-N_test = 1000;
 
 [fxyn, u_slip] = MINDLIN_MONOTONIC([0, 0, un], pars);
 N1 = fxyn(1,3);  
@@ -195,13 +210,33 @@ plot_comparison('ConstN', pars, N1, ASP_NAMES_LIST, ux_test, fx_test, ...
 plot_comparison('', pars, N1, ASP_NAMES_LIST, ux_test, fx_test, ...
     fx_test_ASP, u_slip, color_plot, length(ASP_NAMES_LIST), ulimits, flimits)
 
+%% Save data for MIF model
+
+yaml_res.x_disp = ux_test;
+yaml_res.normal_disp = un_test;
+yaml_res.x_force = fx_test_ASP{3};
+yaml_res.normal_force = N1;
+
+
+fprintf(fileID, 'asp_num_quad_points: %u\n', ASP_NQP_RAD_LIST(3));
+
+fprintf(fileID, 'constant_normal : \n');
+
+
+% Start with the Output Results
+fn = fieldnames(yaml_res);
+%loop through the fields
+for i = 1:numel(fn)
+    fprintf(fileID, '    %s : %s\n', fn{i}, mat2str_comma(yaml_res.(fn{i})));
+end
+
+% fclose(fileID);
+
 %% Comparison Plot 2 - Decrease Normal Load In Middle
 
 hyst_amp = 1.2; 
 un1 = 1e-5;
 un2 = 0.6^(2/3) * un1; % 60% Force
-N_test = 1000;
-
 
 
 [fxyn, u_slip1] = MINDLIN_MONOTONIC([0, 0, un1], pars);
@@ -233,7 +268,7 @@ Trange = [fx_test(N_test), fx_test(N_test)+(N2 - N1)/dNdT];
 
 dNUx_dT = @(T, NUx)MINDLIN_INCREASET_DECREASEN_DOT(T, NUx, pars, dNdT);
 NUx0 = [N1; ux_trans];
-options = odeset('MaxStep',abs(range(Trange))/100);
+options = odeset('MaxStep',abs(range(Trange))/min(N_test, 100));
 [T, NUx] = ode45(dNUx_dT, Trange, NUx0, options);
 
 % Cut the Transition Curves to be appropriately sized
@@ -278,12 +313,30 @@ plot_comparison('', pars, N1, ASP_NAMES_LIST, ux_test, fx_test, ...
     fx_test_ASP, u_slip1, color_plot, length(ASP_NAMES_LIST), ulimits, flimits, ...
     N2, u_slip2, fn_test, Nlimits)
 
+%% Save data for MIF model
+
+yaml_res.x_disp = ux_test;
+yaml_res.normal_disp = un_test;
+yaml_res.x_force = fx_test_ASP{3};
+yaml_res.normal_force = fn_test;
+
+fprintf(fileID, 'decreasing_normal : \n');
+
+
+% Start with the Output Results
+fn = fieldnames(yaml_res);
+%loop through the fields
+for i = 1:numel(fn)
+    fprintf(fileID, '    %s : %s\n', fn{i}, mat2str_comma(yaml_res.(fn{i})));
+end
+
+% fclose(fileID);
+
 %% Comparison 3 - Increasing N and T (Mindlin and Deresiewicz 1953, Section 7)
 
 hyst_amp = 1.2; 
 un1 = 1e-5;
 un2 = 1.2^(2/3) * un1; % 120% Force
-N_test = 1000;
 
 [fxyn, u_slip1] = MINDLIN_MONOTONIC([0, 0, un1], pars);
 N1 = fxyn(1,3);  
@@ -321,7 +374,7 @@ trans_offset = sum(trans_mask)+1;
 Trange = [fx_test(N_test), fx_test(N_test)+pars.mu*(N2 - N1)];
 dNUx_dT = @(T, NUx)MINDLIN_INCREASE_DOT(T, NUx, pars);
 NUx0 = [N1; ux_trans];
-options = odeset('MaxStep',pars.mu*(N2 - N1)/100);
+options = odeset('MaxStep',pars.mu*(N2 - N1)/min(N_test, 100));
 [T, NUx] = ode45(dNUx_dT, Trange, NUx0, options);
 UN_insert = (9.*NUx(:, 1)'.^2/16/pars.R/pars.Estar^2).^(1/3);
 
@@ -352,6 +405,25 @@ plot_comparison('', pars, N1, ASP_NAMES_LIST, ux_test, fx_test, ...
     N2, u_slip2, fn_test, Nlimits)
 
 
+%% Save data for MIF model
+
+yaml_res.x_disp = ux_test;
+yaml_res.normal_disp = un_test;
+yaml_res.x_force = fx_test_ASP{3};
+yaml_res.normal_force = fn_test;
+
+fprintf(fileID, 'increasing_normal : \n');
+
+
+% Start with the Output Results
+fn = fieldnames(yaml_res);
+%loop through the fields
+for i = 1:numel(fn)
+    fprintf(fileID, '    %s : %s\n', fn{i}, mat2str_comma(yaml_res.(fn{i})));
+end
+
+
+fclose(fileID);
 
 %% Comparison Plot 1 - Constant Normal Load (again)
 
@@ -747,4 +819,18 @@ function [dNUx_dT] = MINDLIN_INCREASET_DECREASEN_DOT(T, NUx, pars, dNdT)
     dNUx_dT(2) = 1/(8*pars.Gstar*a)*(-pars.mu* abs(dNUx_dT(1)) ...
         + (1 + pars.mu* abs(dNUx_dT(1)))*(1 - T / (pars.mu * NUx(1)))^(-1/3) ); % Mindlin and Deresiewicz, 1953 - Eqn 30
     
+end
+
+
+%% Matrix to Str with comma: 
+% n = [12345 6789 10234 3452]*1e-3;
+% 
+% str = mat2str_comma(n)
+    
+function str = mat2str_comma(mat)
+    
+    str = sprintf('%.12e,' , mat);
+    str = str(1:end-1);% strip final comma
+
+    str = "[" + str + "]";
 end
