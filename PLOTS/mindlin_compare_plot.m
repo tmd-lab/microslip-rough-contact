@@ -71,9 +71,10 @@ pars.Et = 0.01*pars.E;
 % Save material properties / asperity properties used
 fprintf(fileID, 'E : %f \n', pars.E);
 fprintf(fileID, 'nu : %f \n', pars.nu);
-fprintf(fileID, 'R : %f \n', pars.R);
+fprintf(fileID, 'R : %.15e \n', pars.R);
 fprintf(fileID, 'Et : %f \n', pars.Et);
-fprintf(fileID, 'Sys : %s \n', 'inf');
+fprintf(fileID, 'Sys : %s \n', num2str(pars.Sys));
+fprintf(fileID, 'mu : %s \n', pars.mu);
 
 
 %% Asperity Model Lists + Details
